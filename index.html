@@ -164,6 +164,53 @@
                 return `${year}-${month}-${day}T${hours}:${minutes}`;
             };
 
+            const loadEntriesFromSheet = async () => {
+                if (!sheetUrl || !userName) return;
+                
+                try {
+                    setSyncMessage('📥 Loading entries...');
+                    
+                    const response = await fetch(sheetUrl + '?user=' + encodeURIComponent(userName), {
+                        method: 'GET',
+                        redirect: 'follow'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to load entries');
+                    }
+                    
+                    const data = await response.json();
+                    
+                    if (data.status === 'success' && data.entries && Array.isArray(data.entries)) {
+                        if (data.entries.length === 0) {
+                            setEntries([]);
+                            setSyncMessage('');
+                            return;
+                        }
+                        
+                        const loadedEntries = data.entries.map(e => ({
+                            id: parseInt(e.entryId),
+                            user: e.user,
+                            task: e.task,
+                            startTime: new Date(e.startTime).getTime(),
+                            endTime: new Date(e.endTime).getTime(),
+                            duration: Math.floor(parseFloat(e.duration) * 3600)
+                        })).filter(e => !isNaN(e.id));
+                        
+                        setEntries(loadedEntries);
+                        setSyncMessage('✓ Loaded ' + loadedEntries.length + ' entries');
+                        setTimeout(() => setSyncMessage(''), 3000);
+                    } else {
+                        setEntries([]);
+                        setSyncMessage('');
+                    }
+                } catch (error) {
+                    console.error('Load error:', error);
+                    setEntries([]);
+                    setSyncMessage('');
+                }
+            };
+
             const syncToSheet = async (entry) => {
                 if (!sheetUrl) {
                     setSyncMessage('⚠️ Google Sheet URL not set');
