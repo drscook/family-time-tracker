@@ -87,9 +87,19 @@
             const [syncMessage, setSyncMessage] = useState('');
 
             useEffect(() => {
+                // Google Apps Script URL - pre-configured for all family members
+                const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxfX0FHwa9lkxP2hwJJPGgUt__kjJ-NoQrs3507K7KPBtbokea77F-oeXhdicOLV1u3_w/exec';
+                
                 const savedUrl = localStorage.getItem('sheetUrl');
                 const savedName = localStorage.getItem('userName');
-                if (savedUrl) setSheetUrl(savedUrl);
+                
+                // Use default URL if none is saved
+                if (!savedUrl) {
+                    setSheetUrl(DEFAULT_SHEET_URL);
+                } else {
+                    setSheetUrl(savedUrl);
+                }
+                
                 if (savedName) {
                     setUserName(savedName);
                     setShowNamePrompt(false);
