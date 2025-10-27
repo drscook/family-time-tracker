@@ -99,10 +99,17 @@
                 if (savedUsers) setUserOptions(JSON.parse(savedUsers));
                 if (savedTasks) setTaskOptions(JSON.parse(savedTasks));
             }, []);
+            
+            // Load entries from Google Sheets when user logs in
+            useEffect(() => {
+                if (userName && sheetUrl && !showNamePrompt) {
+                    loadEntriesFromSheet();
+                }
+            }, [userName, sheetUrl, showNamePrompt]);
 
             useEffect(() => {
                 // Google Apps Script URL - pre-configured for all family members
-                const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzRmGCDC-dBGS_92naJ0rtLTExtvGZXKvj7R72hqQjLnx0qmV-yqpigU4CjjOXgCG7hxQ/exec';
+                const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzVyq_M7JoBbCI1hQKaiotTLyfhd3tO761ktDXl5nH6Lh5vgTYNA1RXcw_MO_fyp-NJZw/exec';
                 
                 const savedUrl = localStorage.getItem('sheetUrl');
                 const savedName = localStorage.getItem('userName');
