@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Time Tracker</title>
+    <title>Cook Time Tracker</title>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -107,7 +107,7 @@
 
             useEffect(() => {
                 // Google Apps Script URL - pre-configured for all family members
-                const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzVyq_M7JoBbCI1hQKaiotTLyfhd3tO761ktDXl5nH6Lh5vgTYNA1RXcw_MO_fyp-NJZw/exec';
+                const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzmZ8yQBuB0xeT7GeDSb0Ti4kHRYJ_AdNIMmpDFJQqwZ72tSXMeOfo1Kz1LIrr0sVqagQ/exec';
                 
                 const savedUrl = localStorage.getItem('sheetUrl');
                 const savedName = localStorage.getItem('userName');
@@ -459,7 +459,7 @@
                     <div className="max-w-2xl mx-auto">
                         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
                             <div className="flex justify-between items-center mb-4">
-                                <h1 className="text-3xl font-bold text-gray-800">Time Tracker</h1>
+                                <h1 className="text-3xl font-bold text-gray-800">Cook Time Tracker</h1>
                                 <div className="flex items-center gap-3">
                                     {syncMessage && (
                                         <div className="text-sm font-semibold text-gray-700">
