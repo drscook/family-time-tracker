@@ -156,6 +156,7 @@
                 setSyncMessage('⏳ Sending to Google Sheets...');
                 
                 try {
+                    console.log('Sending:', JSON.stringify({entryId: entry.id, user: entry.user, task: entry.task}));
                     const response = await fetch(sheetUrl, {
                         method: 'POST',
                         redirect: 'follow',
