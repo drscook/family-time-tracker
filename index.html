@@ -163,6 +163,7 @@
                             'Content-Type': 'text/plain',
                         },
                         body: JSON.stringify({
+                            entryId: entry.id,
                             user: entry.user,
                             task: entry.task,
                             startTime: new Date(entry.startTime).toLocaleString(),
@@ -231,7 +232,7 @@
                 setEditEndTime(formatDateTimeForInput(entry.endTime));
             };
 
-            const saveEdit = (id) => {
+            const saveEdit = async (id) => {
                 const newStartTime = new Date(editStartTime).getTime();
                 const newEndTime = new Date(editEndTime).getTime();
                 const newDuration = Math.floor((newEndTime - newStartTime) / 1000);
@@ -241,19 +242,25 @@
                     return;
                 }
                 
+                const updatedEntry = entries.find(e => e.id === id);
+                const newEntry = {
+                    ...updatedEntry,
+                    task: editTask,
+                    startTime: newStartTime,
+                    endTime: newEndTime,
+                    duration: newDuration
+                };
+                
                 setEntries(entries.map(e => 
-                    e.id === id ? { 
-                        ...e, 
-                        task: editTask,
-                        startTime: newStartTime,
-                        endTime: newEndTime,
-                        duration: newDuration
-                    } : e
+                    e.id === id ? newEntry : e
                 ));
                 setEditingId(null);
                 setEditTask('');
                 setEditStartTime('');
                 setEditEndTime('');
+                
+                // Sync the updated entry to Google Sheets
+                await syncToSheet(newEntry);
             };
 
             const cancelEdit = () => {
