@@ -87,6 +87,18 @@
             const [showSettings, setShowSettings] = useState(false);
             const [syncing, setSyncing] = useState(false);
             const [syncMessage, setSyncMessage] = useState('');
+            
+            // Dropdown options - customize these for your family!
+            const [userOptions, setUserOptions] = useState(['Scott', 'Sarah', 'Alex', 'Emma']);
+            const [taskOptions, setTaskOptions] = useState(['Homework', 'Reading', 'Chores', 'Practice', 'Project', 'Exercise', 'Other']);
+            
+            // Load custom options from localStorage
+            useEffect(() => {
+                const savedUsers = localStorage.getItem('userOptions');
+                const savedTasks = localStorage.getItem('taskOptions');
+                if (savedUsers) setUserOptions(JSON.parse(savedUsers));
+                if (savedTasks) setTaskOptions(JSON.parse(savedTasks));
+            }, []);
 
             useEffect(() => {
                 // Google Apps Script URL - pre-configured for all family members
@@ -273,6 +285,8 @@
             const saveSettings = () => {
                 localStorage.setItem('sheetUrl', sheetUrl);
                 localStorage.setItem('userName', userName);
+                localStorage.setItem('userOptions', JSON.stringify(userOptions));
+                localStorage.setItem('taskOptions', JSON.stringify(taskOptions));
                 setShowSettings(false);
                 setShowNamePrompt(false);
             };
@@ -282,15 +296,17 @@
                     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4 flex items-center justify-center">
                         <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md w-full">
                             <h2 className="text-2xl font-bold text-gray-800 mb-4">Welcome!</h2>
-                            <p className="text-gray-600 mb-6">Enter your name to start tracking time:</p>
-                            <input
-                                type="text"
+                            <p className="text-gray-600 mb-6">Select your name to start tracking time:</p>
+                            <select
                                 value={userName}
                                 onChange={(e) => setUserName(e.target.value)}
-                                placeholder="Your name"
                                 className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-lg mb-4 focus:outline-none focus:border-indigo-500"
-                                onKeyPress={(e) => e.key === 'Enter' && userName.trim() && setShowNamePrompt(false)}
-                            />
+                            >
+                                <option value="">Choose your name...</option>
+                                {userOptions.map(name => (
+                                    <option key={name} value={name}>{name}</option>
+                                ))}
+                            </select>
                             <button
                                 onClick={() => userName.trim() && setShowNamePrompt(false)}
                                 disabled={!userName.trim()}
@@ -318,13 +334,16 @@
                             
                             <div className="mb-6">
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">Your Name</label>
-                                <input
-                                    type="text"
+                                <select
                                     value={userName}
                                     onChange={(e) => setUserName(e.target.value)}
-                                    placeholder="Your name"
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500"
-                                />
+                                >
+                                    <option value="">Select your name...</option>
+                                    {userOptions.map(name => (
+                                        <option key={name} value={name}>{name}</option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div className="mb-6">
@@ -335,6 +354,28 @@
                                     onChange={(e) => setSheetUrl(e.target.value)}
                                     placeholder="https://script.google.com/macros/s/..."
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500 text-sm"
+                                />
+                            </div>
+
+                            <div className="mb-6">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">Family Member Names (comma-separated)</label>
+                                <input
+                                    type="text"
+                                    value={userOptions.join(', ')}
+                                    onChange={(e) => setUserOptions(e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                                    placeholder="Scott, Sarah, Alex, Emma"
+                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500"
+                                />
+                            </div>
+
+                            <div className="mb-6">
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">Task Options (comma-separated)</label>
+                                <input
+                                    type="text"
+                                    value={taskOptions.join(', ')}
+                                    onChange={(e) => setTaskOptions(e.target.value.split(',').map(s => s.trim()).filter(s => s))}
+                                    placeholder="Homework, Reading, Chores, Practice"
+                                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:border-indigo-500"
                                 />
                             </div>
 
@@ -409,13 +450,16 @@
                             )}
                             
                             {!isTracking && (
-                                <input
-                                    type="text"
+                                <select
                                     value={currentTask}
                                     onChange={(e) => setCurrentTask(e.target.value)}
-                                    placeholder="What are you working on?"
                                     className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-lg mb-4 focus:outline-none focus:border-indigo-500"
-                                />
+                                >
+                                    <option value="">What are you working on?</option>
+                                    {taskOptions.map(task => (
+                                        <option key={task} value={task}>{task}</option>
+                                    ))}
+                                </select>
                             )}
                             
                             <button
