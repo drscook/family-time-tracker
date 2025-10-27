@@ -90,7 +90,7 @@
 
             useEffect(() => {
                 // Google Apps Script URL - pre-configured for all family members
-                const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzQcUNmdiSKFY9L6m1HY0SMNAPklWdmU9Trp4DF-b3nhw2bsQbgd48ieB4trRLLYgjSqA/exec';
+                const DEFAULT_SHEET_URL = 'https://script.google.com/macros/s/AKfycbzRmGCDC-dBGS_92naJ0rtLTExtvGZXKvj7R72hqQjLnx0qmV-yqpigU4CjjOXgCG7hxQ/exec';
                 
                 const savedUrl = localStorage.getItem('sheetUrl');
                 const savedName = localStorage.getItem('userName');
@@ -156,7 +156,6 @@
                 setSyncMessage('⏳ Sending to Google Sheets...');
                 
                 try {
-                    console.log('Sending:', JSON.stringify({entryId: entry.id, user: entry.user, task: entry.task}));
                     const response = await fetch(sheetUrl, {
                         method: 'POST',
                         redirect: 'follow',
