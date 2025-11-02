@@ -77,6 +77,32 @@
             const [currentTask, setCurrentTask] = useState('');
             const [startTime, setStartTime] = useState(null);
             const [elapsedSeconds, setElapsedSeconds] = useState(0);
+            
+            // Load tracking state from localStorage on mount
+            useEffect(() => {
+                const savedTracking = localStorage.getItem('isTracking');
+                const savedTask = localStorage.getItem('currentTask');
+                const savedStartTime = localStorage.getItem('startTime');
+                
+                if (savedTracking === 'true' && savedStartTime) {
+                    setIsTracking(true);
+                    setCurrentTask(savedTask || '');
+                    setStartTime(parseInt(savedStartTime));
+                }
+            }, []);
+            
+            // Save tracking state whenever it changes
+            useEffect(() => {
+                if (isTracking && startTime) {
+                    localStorage.setItem('isTracking', 'true');
+                    localStorage.setItem('currentTask', currentTask);
+                    localStorage.setItem('startTime', startTime.toString());
+                } else {
+                    localStorage.removeItem('isTracking');
+                    localStorage.removeItem('currentTask');
+                    localStorage.removeItem('startTime');
+                }
+            }, [isTracking, currentTask, startTime]);
             const [editingId, setEditingId] = useState(null);
             const [editTask, setEditTask] = useState('');
             const [editStartTime, setEditStartTime] = useState('');
